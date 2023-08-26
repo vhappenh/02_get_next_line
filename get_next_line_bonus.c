@@ -3,24 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vhappenh <vhappenh@student.42vienna.com>   +#+  +:+       +#+        */
+/*   By: vhappenh <vhappenh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/04 09:50:19 by vhappenh          #+#    #+#             */
-/*   Updated: 2022/11/24 14:29:18 by vhappenh         ###   ########.fr       */
+/*   Updated: 2023/08/26 11:46:41 by vhappenh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line_bonus.h"
 
-static char	*get_line(int fd, char *save)
+static char	*get_line_loop(char *save, int ret, int fd)
 {
-	int		ret;
 	char	*buf;
 	char	*temp_save;
 
-	if (save == NULL)
-		save = ft_calloc(1, 1);
-	ret = 1;
 	while (!ft_strchr(save, '\n') && ret != 0)
 	{
 		buf = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
@@ -35,9 +31,26 @@ static char	*get_line(int fd, char *save)
 			return (NULL);
 		}
 		save = ft_strjoin(temp_save, buf);
+		if (save == NULL)
+			return (NULL);
 		free (temp_save);
 		free (buf);
 	}
+	return (save);
+}
+
+static char	*get_line(int fd, char *save)
+{
+	int		ret;
+
+	if (save == NULL)
+		save = ft_calloc(1, 1);
+	if (save == NULL)
+		return (NULL);
+	ret = 1;
+	save = get_line_loop(save, ret, fd);
+	if (save == NULL)
+		return (NULL);
 	return (save);
 }
 
